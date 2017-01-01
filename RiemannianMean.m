@@ -1,18 +1,25 @@
 function M = RiemannianMean(tC)
 
-M = mean(tC, 3);
+Np = size(tC, 3);
+M  = mean(tC, 3);
 
-for ii = 1 : 2
+for ii = 1 : 200
+    A = M ^ (1/2);      %-- A = C^(1/2)
+    B = A ^ (-1);       %-- B = C^(-1/2)
+        
     S = zeros(size(M));
-    A = M ^ (1/2);
-    B = A ^ (-1);
-    for jj = 1 : size(tC, 3)
+    for jj = 1 : Np
         C = tC(:,:,jj);
         S = S + A * logm(B * C * B) * A;
     end
+    S = S / Np;
+    
     M = A * expm(B * S * B) * A; 
     
-    norm(S, 'fro')
+    eps = norm(S, 'fro')
+    if (eps < 1e-6)
+        break;
+    end
 end
 
 end

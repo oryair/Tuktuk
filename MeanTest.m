@@ -1,7 +1,7 @@
 close all;
 clear;
 
-M = 10;
+M = 50;
 N = 500;
 
 tC = zeros(M,M,N);
@@ -11,4 +11,4 @@ for ii = 1 : N
     tC(:,:,ii) = cov(A');
 end
 
-RiemannianMean(tC)
+RiemannianMean(tC);
