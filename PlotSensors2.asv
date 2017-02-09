@@ -3,30 +3,15 @@ clear;
 
 addpath('SegyMAT');
 
-dir      = 'C:\Users\Oryair\Desktop\Workarea\Elbit\Data\\0927062016\';
-fileName = '08860.SGY';
+dir      = 'C:\Users\Oryair\Desktop\Workarea\Elbit\Data\\1227062016\';
 
-% [Data, SegyTraceHeaders, SegyHeader] = ReadSegy_nadav([dir, fileName], 'revision' , 1 , 'dsf' , 5 , 'endian' , 'l');
-
-% mData = xlsread('logbook - balmas.xlsx', 2);
-% [~, sensorOrder] = sort(mData(:,4));
-
-% figure; wiggle(Data(:, sensorOrder)); colorbar;
-
-dirTimeStart  = 27;
-fileTimeStart = 44;
-fileTimeEnd   = 51;
-
-firstFile  = 11739;
-
-fileStart = firstFile + (fileTimeStart - dirTimeStart)  * 60 / 5;
-fileEnd   = fileStart + (fileTimeEnd   - fileTimeStart) * 60 / 5;
-
+fileStart = 12381;
 signal_definition.directory = dir;
 signal_definition.type      = 'SGY';
 signal_definition.geophones = int32( 8:32 );
-signal_definition.files_vec = int32(fileStart : fileEnd);
-
+% signal_definition.files_vec = int32(09903 : 10178);
+% signal_definition.files_vec = int32(09903 : 10000);
+signal_definition.files_vec = int32(12381 : 12458);
 
 
 NewSig = Signal_Disp(signal_definition);
@@ -37,6 +22,9 @@ Fs     = 2000;
 length = Fs * win;
 
 % M = 4;
+[~, header, ~] = ReadSegy_nadav([dir, fileName], 'revision' , 1 , 'dsf' , 5 , 'endian' , 'l');
+fileTimeStart = header(1).MinuteOfHour;
+% fileTimeStart = 27;
 figure;
 for ii = 1 : 500 : (size(NewSig, 1) - length)
     vT = (ii : (ii + length)) / Fs;
