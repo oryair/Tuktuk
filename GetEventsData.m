@@ -3,7 +3,7 @@ function [mData, vS, vM, vH] = GetEventsData(vSplitTimes)
 addpath('SegyMAT');
 % dirPath  = 'E:\Elbit\Data\';
 dirPath  = 'C:\Users\Oryair\Desktop\Workarea\Elbit\Data\';
-files    = dir([dirPath, '*\*.SGY']);
+files    = rdir([dirPath, '*\*.SGY']);
 filesNum = length(files);
 
 startTime = min(vSplitTimes(:));
@@ -16,7 +16,8 @@ vM    = zeros(0);
 vH    = zeros(0);
 for ii = 1 : filesNum
 %     ii
-    fileName = [files(ii).folder, '\', files(ii).name];
+%     fileName = [files(ii).folder, '\', files(ii).name];
+    fileName = files(ii).name;
     [~, header, ~] = ReadSegy_nadav(fileName, 'revision' , 1 , 'dsf' , 5 , 'endian' , 'l');
     fileTime = 10000 * header(1).HourOfDay + 100 * header(1).MinuteOfHour + ...
                header(1).SecondOfMinute
