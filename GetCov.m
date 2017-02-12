@@ -1,8 +1,9 @@
 function [tCov, vTime] = GetCov(vSplitTimes)
 
 addpath('SegyMAT');
-dirPath  = 'E:\Elbit\Data\';
-files    = dir([dirPath, '*\*.SGY']);
+% dirPath  = 'E:\Elbit\Data\';
+dirPath  = 'C:\Users\Oryair\Desktop\Workarea\Elbit\Data\';
+files    = rdir([dirPath, '*\*.SGY']);
 filesNum = length(files);
 
 startTime = min(vSplitTimes(:));
@@ -13,7 +14,8 @@ vTime = zeros(0);
 
 for ii = 1 : filesNum
 %     ii
-    fileName = [files(ii).folder, '\', files(ii).name];
+%     fileName = [files(ii).folder, '\', files(ii).name];
+    fileName = files(ii).name;
     [~, header, ~] = ReadSegy_nadav(fileName, 'revision' , 1 , 'dsf' , 5 , 'endian' , 'l');
     fileTime = 100 * header(1).HourOfDay + 1 * header(1).MinuteOfHour
     

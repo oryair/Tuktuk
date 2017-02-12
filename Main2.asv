@@ -56,6 +56,8 @@ for ii = 1 : eventsNum
     vClass((vTime >= a)  & (vTime <= b)) = vTimeClass(ii);
 end
 
+
+
 %%
 tC = tCov;
 mRiemannianMean = RiemannianMean(tC);
@@ -71,8 +73,6 @@ for kk = 1 : K
     Skk = logm(mCSR * tC(:,:,kk) * mCSR) .* mW;
 %     Skk = (mRiemannianMean^(1/2) * logm(mCSR * tC(:,:,kk) * mCSR) * mRiemannianMean^(1/2)) .* mW;
     mS(:,kk) = Skk(triu(true(size(Skk))));
-%     MMM      = tC(:,:,kk);
-%     mS(:,kk) = MMM(triu(true(size(MMM))));
 end
 
 %%

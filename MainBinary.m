@@ -3,58 +3,52 @@ clear;
 
 %%
 [~, ~, mXlsRaw] = xlsread('logbook - balmas.xlsx');
-c            = containers.Map;
-% class        = 1;
-% for ii = 3 : size(mXlsRaw, 1)
-%     
-%     rawClass = [mXlsRaw{ii,3}, mXlsRaw{ii,4}];
-%     
-%     if ~any(strcmp(keys(c), rawClass))
-%         c(rawClass) = class;
-%         class       = class + 1;
-%     end
-%     
+
+%%
+mSplit = [1200, 1228, 0;
+          1229, 1235, 1;
+          1236, 1244, 0;
+          1245, 1250, 1;
+          1251, 1256, 1;
+          1257, 1257, 0;
+          1258, 1303, 1;
+          1304, 1414, 0;
+          1415, 1419, 1;
+          1420, 1432, 0;
+          1433, 1438, 1;
+          1439, 1459, 0;
+          1500, 1505, 1;
+          1506, 1507, 0;
+          1508, 1513, 1;
+          1514, 1519, 1;
+          1520, 1521, 0;
+          1522, 1528, 1;
+          1529, 1530, 0;
+          ];
+              
+mTimeSplit = mSplit(:,[1,2]);
+vTimeClass = mSplit(:,3);
+              
+eventsNum = size(mTimeSplit, 1);
+%%
+[tCov, vTime] = GetCov(mTimeSplit);
+
+%%
+% rawClass   = [[mXlsRaw{3:end,3}]', [mXlsRaw{3:end,4}]'];
+% vTimeClass = [];
+% for ii = 1 : eventsNum
+%     vTimeClass(end+1) = c(rawClass(ii,:));
 % end
-
-c('xv') = 1;
-c('xd') = 2;
-c('hx') = 3;
-c('hv') = 4;
-c('hd') = 5;
-c('jx') = 6;
-c('jv') = 7;
-c('jd') = 8;
-c('nx') = 9;
-c('nv') = 10;
-c('nd') = 11;
-
-
-%%
-vSH = str2num( datestr([mXlsRaw{3:end,7}]', 'HH') );
-vSM = str2num( datestr([mXlsRaw{3:end,7}]', 'MM') );
-vEH = str2num( datestr([mXlsRaw{3:end,8}]', 'HH') );
-vEM = str2num( datestr([mXlsRaw{3:end,8}]', 'MM') );
-mSplitTime = [vSH*100 + vSM, vEH*100 + vEM];
-
-eventsNum = size(mSplitTime, 1);
-%%
-[tCov, vTime] = GetCov(mSplitTime);
-
-%%
-rawClass   = [[mXlsRaw{3:end,3}]', [mXlsRaw{3:end,4}]'];
-vTimeClass = [];
-for ii = 1 : eventsNum
-    vTimeClass(end+1) = c(rawClass(ii,:));
-end
 
 %%
 vClass = zeros(eventsNum, 1);
 for ii = 1 : eventsNum
-    a = mSplitTime(ii,1);
-    b = mSplitTime(ii,2);
+    a = mTimeSplit(ii,1);
+    b = mTimeSplit(ii,2);
     
     vClass((vTime >= a)  & (vTime <= b)) = vTimeClass(ii);
 end
+
 
 %%
 tC = tCov;
@@ -71,7 +65,7 @@ for kk = 1 : K
     Skk = logm(mCSR * tC(:,:,kk) * mCSR) .* mW;
 %     Skk = (mRiemannianMean^(1/2) * logm(mCSR * tC(:,:,kk) * mCSR) * mRiemannianMean^(1/2)) .* mW;
     mS(:,kk) = Skk(triu(true(size(Skk))));
-%     MMM      = tC(:,:,kk);
+%     MMM      = tC(:,:,kk) .* mW;
 %     mS(:,kk) = MMM(triu(true(size(MMM))));
 end
 
@@ -107,28 +101,28 @@ mData  = [mS; vClass'];
 % mData2 = [mZ; vClass];
 
 %%
-L           = size(mS, 2);
-vTestIdx    = randperm(L, round(L / 10));
-vTrainIdx   = setdiff(1 : L, vTestIdx);
-mTest       = mS(:, vTestIdx);
-vTestClass  = vClass(vTestIdx);
-mTrain      = mS(:, vTrainIdx);
-vTrainClass = vClass(vTrainIdx);
-
-tTrain = [mTrain; vTrainClass];
-
-trainedClassifierKnn = trainClassifier(tTrain);
+% L           = size(mS, 2);
+% vTestIdx    = randperm(L, round(L / 10));
+% vTrainIdx   = setdiff(1 : L, vTestIdx);
+% mTest       = mS(:, vTestIdx);
+% vTestClass  = vClass(vTestIdx);
+% mTrain      = mS(:, vTrainIdx);
+% vTrainClass = vClass(vTrainIdx);
+% 
+% tTrain = [mTrain; vTrainClass];
+% 
+% trainedClassifierKnn = trainClassifier(tTrain);
 
 %%
-vY = trainedClassifierKnn.predictFcn(mTest);
-
-[~, vSortIdx] = sort(vTestIdx);
-
-figure; hold on;
-plot(vTestClass(vSortIdx),  'b', 'LineWidth', 2);
-plot(vY(vSortIdx),         ':g', 'LineWidth', 2);
-
-mean(vY == vTestClass')
+% vY = trainedClassifierKnn.predictFcn(mTest);
+% 
+% [~, vSortIdx] = sort(vTestIdx);
+% 
+% figure; hold on;
+% plot(vTestClass(vSortIdx),  'b', 'LineWidth', 2);
+% plot(vY(vSortIdx),         ':g', 'LineWidth', 2);
+% 
+% mean(vY == vTestClass')
 
 %%
 % mPhi = tsne(mS', vClass, 3);

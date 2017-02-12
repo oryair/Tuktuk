@@ -1,7 +1,8 @@
 function [mData, vS, vM, vH] = GetEventsData(vSplitTimes)
 
 addpath('SegyMAT');
-dirPath  = 'E:\Elbit\Data\';
+% dirPath  = 'E:\Elbit\Data\';
+dirPath  = 'C:\Users\Oryair\Desktop\Workarea\Elbit\Data\';
 files    = dir([dirPath, '*\*.SGY']);
 filesNum = length(files);
 
