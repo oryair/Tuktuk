@@ -16,7 +16,7 @@ for ii = 1 : 200
     
     M = A * expm(B * S * B) * A; 
     
-    eps = norm(S, 'fro')
+    eps = norm(S, 'fro');
     if (eps < 1e-6)
         break;
     end

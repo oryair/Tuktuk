@@ -56,8 +56,6 @@ for ii = 1 : eventsNum
     vClass((vTime >= a)  & (vTime <= b)) = vTimeClass(ii);
 end
 
-
-
 %%
 tC = tCov;
 mRiemannianMean = RiemannianMean(tC);
@@ -73,6 +71,8 @@ for kk = 1 : K
     Skk = logm(mCSR * tC(:,:,kk) * mCSR) .* mW;
 %     Skk = (mRiemannianMean^(1/2) * logm(mCSR * tC(:,:,kk) * mCSR) * mRiemannianMean^(1/2)) .* mW;
     mS(:,kk) = Skk(triu(true(size(Skk))));
+%     MMM      = tC(:,:,kk);
+%     mS(:,kk) = MMM(triu(true(size(MMM))));
 end
 
 %%
@@ -107,6 +107,7 @@ mData  = [mS; vClass'];
 % mData2 = [mZ; vClass];
 
 %%
+load TuktukData.mat
 L           = size(mS, 2);
 vTestIdx    = randperm(L, round(L / 10));
 vTrainIdx   = setdiff(1 : L, vTestIdx);
@@ -115,9 +116,10 @@ vTestClass  = vClass(vTestIdx);
 mTrain      = mS(:, vTrainIdx);
 vTrainClass = vClass(vTrainIdx);
 
-tTrain = [mTrain; vTrainClass];
+tTrain = [mTrain; vTrainClass'];
 
-trainedClassifierKnn = trainClassifier(tTrain);
+[trainedClassifierKnn, trainScore] = trainClassifier(tTrain);
+trainScore
 
 %%
 vY = trainedClassifierKnn.predictFcn(mTest);
@@ -128,7 +130,7 @@ figure; hold on;
 plot(vTestClass(vSortIdx),  'b', 'LineWidth', 2);
 plot(vY(vSortIdx),         ':g', 'LineWidth', 2);
 
-mean(vY == vTestClass')
+mean(vY == vTestClass)
 
 %%
 % mPhi = tsne(mS', vClass, 3);
