@@ -1,11 +1,20 @@
-function mS = getRiemannianFeatures(mX)
+function mS = getRiemannianFeatures(mX,params)
 
 M = size(mX,1);
 K = size(mX,3);
 %%
 tC = zeros(M, M, K);
 for kk = 1 : K
-    tC(:,:,kk) = cov(mX(:,:,kk)' );
+    
+    switch (params.type)
+        case 'covariance'
+            tC(:,:,kk) = cov(mX(:,:,kk)' );
+            
+        case 'connectivity'
+            Pairs      = CalcPairs(mX(:,:,kk)');
+            tC(:,:,kk) = CalcSig(Pairs);
+            min(eig(tC(:,:,kk)));
+    end
 end
 
 mRiemannianMean = RiemannianMean(tC);

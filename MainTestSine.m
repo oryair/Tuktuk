@@ -1,4 +1,6 @@
 addpath('SegyMAT');
+addpath('Connectivity');
+
 close all
 clear;
 
@@ -13,8 +15,12 @@ params.N            = N;
 params.p            = 0.1;
 params.vChannels    = vChannels;
 
-[mX, vIdx] = getDataTest(params);
-mS         = getRiemannianFeatures(mX);
+[mX, vIdx]      = getDataTest(params);
+
+%%
+% paramsR.type    = 'connectivity'; 
+paramsR.type    = 'covariance';
+mS              = getRiemannianFeatures(mX, paramsR);
 % %%
 % tC = zeros(M, M, K);
 % for kk = 1 : K
@@ -43,7 +49,7 @@ validationAccuracy
 %%
 params.vChannels    = vChannels;
 [mXTest, vIdxTest]  = getDataTest(params);
-mSTest              = getRiemannianFeatures(mXTest);
+mSTest              = getRiemannianFeatures(mXTest, paramsR);
 vY                  = trainedClassifier.predictFcn(mSTest);
 
 testAccuracy        = 1 - sum(abs(double(vIdxTest) - vY'))/params.K

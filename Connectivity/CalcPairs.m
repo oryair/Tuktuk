@@ -11,7 +11,8 @@ Pairs{N} = zeros(size(mS, 1));
         
         eps = median(mD(:));
         mK  = exp( -mD.^2 / eps^2 );
-        mK  = mK ./ sum(mK, 2);
+%         mK  = mK ./ sum(mK, 2);
+        mK = bsxfun(@rdivide, mK, sum(mK,2));
         
         Pairs{ii} = mK;
         
