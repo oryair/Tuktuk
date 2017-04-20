@@ -10,10 +10,22 @@ for kk = 1 : K
         case 'covariance'
             tC(:,:,kk) = cov(mX(:,:,kk)' );
             
+        case 'covarianceFreq'
+            D           = dftmtx(M);
+            mCDft       = D*cov(mX(:,:,kk)')*D.';
+            phaseX      = (angle(mCDft(1,2)) - angle(mCDft(1,1)))*M/(2*pi);
+            phaseY      = (angle(mCDft(2,1)) - angle(mCDft(1,1)))*M/(2*pi);
+            wx          = (0:2*pi:2*pi*(M-1))/M;
+            [Wx,Wy]     = meshgrid(wx,wx); 
+            phase       = angle(mCDft) - phaseX*Wx - phaseY*Wy;
+%             mCDft       = abs(mCDft).*exp(1j*phase);
+            mCDft       = abs(mCDft);
+            tC(:,:,kk)  = real(D'*mCDft*conj(D)/M^2);
+%             min(eig(tC(:,:,kk)))
+
         case 'connectivity'
             Pairs      = CalcPairs(mX(:,:,kk)');
             tC(:,:,kk) = CalcSig(Pairs);
-            min(eig(tC(:,:,kk)));
     end
 end
 

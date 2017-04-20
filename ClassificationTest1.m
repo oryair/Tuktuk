@@ -41,6 +41,11 @@ nAll  = length(vClass);
 
 %%
 
+paramsR.type    = 'covariance';
+% paramsR.type    = 'covarianceFreq';
+mS              = getRiemannianFeatures(mX, paramsR);
+%%
+
 figure; plot(vClass); hold on; grid on;
 
 vIdx      = find(vClass == 4);

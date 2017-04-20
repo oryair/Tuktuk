@@ -10,7 +10,7 @@ t           = linspace(0, 1, N + 1); t(end) = [];
 p1 = 1;
 vChannelsDistract = 3;
 %%
-mX           = 1.5*randn(M, N, K);
+mX           = params.noise*randn(M, N, K);
 vIdx         = rand(1, K) < p;
 vIdxDistarct = vIdx;%rand(1, K) < p1;
 

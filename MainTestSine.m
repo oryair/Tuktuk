@@ -12,34 +12,17 @@ vChannels   = [5, 7];
 params.M            = M;
 params.K            = K;
 params.N            = N;
-params.p            = 0.1;
+params.p            = 0.5;
+params.noise        = 1.5;
 params.vChannels    = vChannels;
 
 [mX, vIdx]      = getDataTest(params);
 
 %%
 % paramsR.type    = 'connectivity'; 
-paramsR.type    = 'covariance';
+paramsR.type    = 'covarianceFreq';
+% paramsR.type    = 'covariance';
 mS              = getRiemannianFeatures(mX, paramsR);
-% %%
-% tC = zeros(M, M, K);
-% for kk = 1 : K
-%     tC(:,:,kk) = cov(mX(:,:,kk)' );
-% end
-% 
-% mRiemannianMean = RiemannianMean(tC);
-% 
-% %%
-% mCSR = mRiemannianMean^(-1/2);
-% 
-% MM = M * (M + 1) / 2;
-% mS = zeros(MM, K);
-% 
-% mW = sqrt(2) * ones(M) - (sqrt(2) - 1) * eye(M);
-% for kk = 1 : K
-%     Skk = logm(mCSR * tC(:,:,kk) * mCSR) .* mW;
-%     mS(:,kk) = Skk(triu(true(size(Skk))));
-% end
 
 %%
 temp = [mS; vIdx];
@@ -47,7 +30,7 @@ temp = [mS; vIdx];
 validationAccuracy
 
 %%
-params.vChannels    = vChannels;
+params.vChannels    = vChannels + 2;
 [mXTest, vIdxTest]  = getDataTest(params);
 mSTest              = getRiemannianFeatures(mXTest, paramsR);
 vY                  = trainedClassifier.predictFcn(mSTest);
@@ -67,4 +50,4 @@ realEvent   = kron(vIdxTest,ones(1,N));
 dataPlot    = [temp predict'];
 
 % figure; wiggle(dataPlot);
-figure; plot(dataPlot); hold on; plot(realEvent,'k')
+figure; plot(dataPlot); hold on; plot(realEvent,'g')
