@@ -1,13 +1,19 @@
 function Pairs = CalcPairs(mS)
 
-    for ii = 1 : size(mS, 2)
+N = size(mS, 2);
+
+Pairs{N} = zeros(size(mS, 1));
+
+    for ii = 1 : N
        
-        vS = mS(:,ii);
-        mD = squareform( pdist(vS) );
+        vS  = mS(:,ii);
+        mD  = squareform( pdist(vS) );
         
         eps = median(mD(:));
+        mK  = exp( -mD.^2 / eps^2 );
+        mK  = mK ./ sum(mK, 2);
         
-        Pairs{ii} = exp( -mD.^2 / eps^2 );
+        Pairs{ii} = mK;
         
     end
 
